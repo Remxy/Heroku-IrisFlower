@@ -64,7 +64,7 @@ class FlowerForm(FlaskForm):
 
 
 @app.route('/', methods = ['GET', 'POST'])
-def home():
+def index():
 
     # Create instance of the form.
     form = FlowerForm()
@@ -83,7 +83,7 @@ def home():
     return render_template('home.html', form=form)
 
 
-@app.route('/prediction', methods=['POST'])
+@app.route('/prediction')
 def prediction():
 
     content = {}
