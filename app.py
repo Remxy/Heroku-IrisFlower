@@ -10,7 +10,7 @@ from flask import Flask, render_template, session, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import TextField,SubmitField
 from wtforms.validators import NumberRange
-
+import tensorflow
 import numpy as np  
 from tensorflow.keras.models import load_model
 import joblib
@@ -34,7 +34,7 @@ def return_prediction(model,scaler,sample_json):
     classes = np.array(['setosa', 'versicolor', 'virginica'])
     
     class_ind = model.predict_classes(flower)
-    
+   
     return classes[class_ind][0]
 
 
@@ -63,8 +63,8 @@ class FlowerForm(FlaskForm):
 
 
 
-@app.route('/', methods = ['GET', 'POST'])
-def index():
+@app.route('/home', methods = ['GET', 'POST'])
+def home():
 
     # Create instance of the form.
     form = FlowerForm()
@@ -77,13 +77,13 @@ def index():
         session['pet_len'] = form.pet_len.data
         session['pet_wid'] = form.pet_wid.data
 
-        return redirect(url_for("prediction"))
+        return redirect(url_for('prediction'))
 
 
-    return render_template('home.html', form=form)
+    return render_template('home.html', form = form)
 
 
-@app.route('/prediction', methods =['POST'])
+@app.route('/prediction', methods = ['GET', 'POST'])
 def prediction():
 
     content = {}
@@ -92,10 +92,10 @@ def prediction():
     content['sepal_width'] = float(session['sep_wid'])
     content['petal_length'] = float(session['pet_len'])
     content['petal_width'] = float(session['pet_wid'])
+    
+    my_prediction = return_prediction(model = flower_model, scaler=flower_scaler, sample_json = content)
 
-    results = return_prediction(model=flower_model, scaler=flower_scaler, sample_json=content)
-
-    return render_template('prediction.html', prediction =results)
+    return render_template('prediction.html', prediction = my_prediction)
 
 
 if __name__ == '__main__':
