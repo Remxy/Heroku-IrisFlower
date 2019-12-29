@@ -83,7 +83,7 @@ def index():
     return render_template('home.html', form=form)
 
 
-@app.route('/prediction')
+@app.route('/prediction', methods =['POST'])
 def prediction():
 
     content = {}
@@ -95,7 +95,7 @@ def prediction():
 
     results = return_prediction(model=flower_model, scaler=flower_scaler, sample_json=content)
 
-    return render_template('prediction.html',results=results)
+    return render_template('prediction.html', prediction =results)
 
 
 if __name__ == '__main__':
